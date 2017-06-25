@@ -1,0 +1,73 @@
+<html>
+<head>
+<title>/* ENTER YOUR GAME TITLE HERE */ </title>
+<script src="myGameEngine.js"></script>
+<script>
+window.onload = function(){
+
+/* ======================================================= */
+/* set your canvas background color, width and height here */
+/* ======================================================= */
+var backgroundColor = "black"	
+var gameWidth = 640 		
+var gameHeight = 480 		
+
+/* ======================================================= */
+/* register event listeners here                           */
+/* ======================================================= */
+var keysdown = {};
+window.addEventListener("keydown", function(e){keysdown[e.keyCode] = true}, false);
+window.addEventListener("keyup", function(e){delete keysdown[e.keyCode]}, false);
+
+/* ======================================================= */
+/*   DO NOT MODIFY THIS BLOCK OF CODE BELOW                */
+/* ======================================================= */
+	var canvas = document.getElementById("gameCanvas");
+	canvas.width = gameWidth;
+	canvas.height = gameHeight;
+	var graphics2d = canvas.getContext("2d");
+/* ======================================================= */
+/*   DO NOT MODIFY THIS BLOCK OF CODE ABOVE                */
+/* ======================================================= */
+
+var update = function(){
+	/* handle input events 		*/
+	/* update the game simulation	*/
+	/* collision detection		*/
+	/* check for game/level over	*/
+};
+
+var draw = function(){
+	// clear the screen
+	graphics2d.fillStyle = backgroundColor;
+	graphics2d.fillRect(0, 0, gameWidth, gameHeight);
+
+	/* ============================= */
+	/* draw the visible objects here */
+	/* ============================= */
+	
+};
+
+/* ======================================================= */
+/*   DO NOT MODIFY THIS BLOCK OF CODE BELOW                */
+/* ======================================================= */
+	var gameloop = function(){
+		update();
+		draw();
+		window.requestAnimationFrame(gameloop);
+	};
+
+	// start the gameloop
+	gameloop();
+/* ======================================================= */
+/*   DO NOT MODIFY THIS BLOCK OF CODE ABOVE                */
+/* ======================================================= */
+
+// end onload 
+};
+</script>
+</head>
+<body bgcolor="lightgray">
+<canvas id="gameCanvas"></canvas>
+</body>
+</html>

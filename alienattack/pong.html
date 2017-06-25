@@ -1,0 +1,206 @@
+<html>
+<head>
+<title>Pong!</title>
+<script src="myGameEngine.js"></script>
+<script>
+window.onload = function(){
+
+var canvas = document.getElementById("gameCanvas");
+var graphics2d = canvas.getContext("2d");
+
+// set the background of the canvas to black, or any color you want
+var backgroundColor = "green"
+graphics2d.fillStyle= backgroundColor;
+graphics2d.fillRect(0, 0, 640, 480);
+
+var keysdown = {};
+window.addEventListener("keydown", function(e){keysdown[e.keyCode] = true}, false);
+window.addEventListener("keyup", function(e){delete keysdown[e.keyCode]}, false);
+
+var player1score = 0;
+var player2score = 0;
+var winningScore = 5;
+var gameover = false;
+
+var player = {
+	color: "blue",
+	x: 0,
+	y: 240,
+	width: 10,
+	height: 100,
+	directionX: -1,
+	directionY: 1,
+	velocity: 6,
+	draw: function() {
+		// draw the paddle
+		graphics2d.fillStyle=this.color;
+		graphics2d.fillRect(this.x, this.y, this.width, this.height);
+	},
+	moveUp: function(){
+		this.y = this.y - 1 * this.velocity; 
+		// stop the paddle from going off the top of the screen
+		if (this.y < 0) {
+			this.y = 0;
+		}
+	},
+	moveDown: function(){
+		this.y = this.y + 1 * this.velocity;
+		// stop the paddle from going off the bottom of the screen
+		if (this.y > 480 - this.height) {
+			this.y = 480 - this.height;
+		}
+	}
+};
+
+var opponent = {
+	color: "silver",
+	x: 630,
+	y: 240,
+	width: 10,
+	height: 100,
+	directionX: -1,
+	directionY: 1,
+	velocity: 6,
+	draw: function() {
+		// draw the paddle
+		graphics2d.fillStyle=this.color;
+		graphics2d.fillRect(this.x, this.y, this.width, this.height);
+	},
+	moveUp: function(){
+		this.y = this.y - 1 * this.velocity; 
+		// stop the paddle from going off the top of the screen
+		if (this.y < 0) {
+			this.y = 0;
+		}
+	},
+	moveDown: function(){
+		this.y = this.y + 1 * this.velocity;
+		// stop the paddle from going off the bottom of the screen
+		if (this.y > 480 - this.height) {
+			this.y = 480 - this.height;
+		}
+	}
+};
+
+var ball = {
+	color: "orange",
+	x: 320,
+	y: 240,
+	width: 10,
+	height: 10,
+	directionX: -1,
+	directionY: 1,
+	velocity: 3,
+	draw: function() {
+		// draw the ball
+		graphics2d.fillStyle=this.color;
+		graphics2d.fillRect(this.x, this.y, this.width, this.height);
+	}
+};
+
+var gameloop = function(){
+	update();
+	draw();
+	window.requestAnimationFrame(gameloop);
+};
+
+var ball_speed_up = .001;
+var update = function(){
+	// handle events
+	if ("W".charCodeAt(0) in keysdown) {
+		player.moveUp();
+	} else if ("S".charCodeAt(0) in keysdown) {
+		player.moveDown();
+	}
+
+	if ("I".charCodeAt(0) in keysdown) {
+		opponent.moveUp();
+	} else if ("K".charCodeAt(0) in keysdown) {
+		opponent.moveDown();
+	}
+
+	// update the ball
+    ball.velocity += ball_speed_up;
+	ball.x = ball.x + ball.directionX * ball.velocity;
+	ball.y = ball.y + ball.directionY * ball.velocity;
+
+	// bounce the ball off the walls
+	// if ball goes off the left or right of the screen, 
+	// put it back on screen and reverse directionX.
+	if (ball.x < 0) {
+		ball.x = 0;
+		ball.directionX = -ball.directionX;
+		// opponent has scored.
+		player2score = player2score + 1;
+	} else if (ball.x > 640 - ball.width) { // show on grid.
+		ball.x = 640 - ball.width;
+		ball.directionX = -ball.directionX;
+		// player 1 has scored.
+		player1score = player1score + 1;
+	}
+
+	// if the ball goess off the top or bottom of the screen,
+	// put it back on the screen and reverse directionY
+	if (ball.y < 0) {
+		ball.y = 0;
+		ball.directionY = -ball.directionY;
+	} else if (ball.y > 480 - ball.height) { // show on grid.
+		ball.y = 480 - ball.height;
+		ball.directionY = -ball.directionY;
+	}
+
+	// if the ball collides with the player or opponent, reverse directionX
+	if (collidesWith(ball, player) || collidesWith(ball, opponent)){
+		ball.directionX = -ball.directionX;
+	}
+
+	// check if someone has won
+	if (player1score >= winningScore || player2score >= winningScore) {
+		gameover = true;
+		ball.directionX = 0;
+		ball.directionY = 0;
+		ball.color = backgroundColor;
+	}
+};
+
+var draw = function(){
+	// clear the screen
+	graphics2d.fillStyle = backgroundColor;
+	graphics2d.fillRect(0, 0, 640, 480);
+
+	ball.draw();
+	player.draw();
+	opponent.draw();
+	drawHud();
+};
+
+var drawHud = function(){
+	var fontsize = 24;
+	graphics2d.font = fontsize + "px sans-serif";
+
+	// display player 1's score
+	graphics2d.fillStyle=player.color;
+	graphics2d.fillText("Home: " + player1score, 12, fontsize);
+
+	// display player 2's score
+	graphics2d.fillStyle=opponent.color;
+	graphics2d.fillText("Away: " + player2score, 510, fontsize);
+
+	if (gameover) {
+		var winningTeam = (player1score > player2score) ? "Home" : "Away";
+		graphics2d.fillStyle = (player1score > player2score) ? player.color : opponent.color; 
+		graphics2d.fillText(winningTeam + " team has won!", 190, 240);
+	}
+};
+
+// start the gameloop
+gameloop();
+
+// end onload 
+};
+</script>
+</head>
+<body>
+<canvas id="gameCanvas" width="640" height="480"></canvas>
+</body>
+</html>

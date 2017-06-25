@@ -1,0 +1,27 @@
+<html>
+<head>
+<title>Alien Attack!</title>
+<script src="myGameEngine.js"></script>
+<script>
+window.onload = function(){
+// end onload 
+    var MyGame = function(){
+        Game.call("My Game", 800, 600, "gameCanvas");
+    };
+    MyGame.prototype = Object.create(Game.prototype);
+    MyGame.prototype.constructor = MyGame;
+    MyGame.prototype.init = function(){
+        console.log("init");
+        console.log(this);
+//        this.scene_stack.push(1);
+    };
+    
+    game = new MyGame();
+    game.start();
+};
+</script>
+</head>
+<body bgcolor="lightgray">
+<canvas id="gameCanvas" width="200", height="200", style="background: yellow"></canvas>
+</body>
+</html>
