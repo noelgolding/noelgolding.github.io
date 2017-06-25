@@ -440,7 +440,7 @@ var draw = function(totalElapsedTime){
     
     function loadSound(audio_filename) {
         // buffers automatically when created
-        var snd = new Audio("../../.." + "/assets/alienattack/audio/" + audio_filename); 
+        var snd = new Audio("assets/alienattack/audio/" + audio_filename); 
         return snd;
     }
     
@@ -448,7 +448,7 @@ var draw = function(totalElapsedTime){
     function loadImage(image_filename) {
         if (image_filename) {
             var img = new Image();
-            img.src = "../../.." + "/assets/alienattack/images/" + image_filename;
+            img.src = "assets/alienattack/images/" + image_filename;
             return img;
         }
     }
